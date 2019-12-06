@@ -18,7 +18,7 @@ variable "memory" {
 
 variable "command" {
   description = "The command that is passed to the container"
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
@@ -34,40 +34,41 @@ variable "container_port" {
 
 variable "container_env" {
   description = "Environment variables for this container"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
 variable "labels" {
   description = "Labels to be applied to the docker container"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
 variable "metadata" {
   description = "DEPRECATED - values passed to this variable will be ignored"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
 variable "mountpoint" {
   description = "Mountpoint map with 'sourceVolume' and 'containerPath' and 'readOnly' (optional)."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
 variable "port_mappings" {
   description = "JSON document containing an array of port mappings for the container defintion - if set container_port is ignored (optional)."
   default     = ""
-  type        = "string"
+  type        = string
 }
 
 variable "application_secrets" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
 variable "platform_secrets" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
+
