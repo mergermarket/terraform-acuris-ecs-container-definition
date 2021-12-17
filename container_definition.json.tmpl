@@ -5,6 +5,7 @@
     "portMappings": ${port_mappings},
     "cpu": ${cpu},
     "memory": ${mem},
+    ${stop_timeout == "none" ? "" : format("\"stopTimeout\": %s,", stop_timeout)}  
     "command": ${command},
     "environment": ${container_env},
     "secrets": ${secrets},

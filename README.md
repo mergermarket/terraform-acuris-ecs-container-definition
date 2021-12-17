@@ -14,6 +14,7 @@ Input variables
  * `container_port` - (string) OPTIONAL -App port to expose in the container. Default 8080.
  * `cpu`- (string) OPTIONAL -The CPU limit for this container definition
  * `memory`- (string) OPTIONAL - The memory limit for this container definition
+ * `stop_timeout`- (number) OPTIONAL - Time duration (in seconds) to wait before the container is forcefully killed if it doesn't exit normally on its own.
  * `env`: (map) OPTIONAL - map with environment variables
  * `metadata`: (map) OPTIONAL - Set of metadata for this container. It will be passed as environment variables (key uppercased) and labels.
  * `mountpoint`: (map) OPTIONAL - Configuration of one mountpoint for this volume. Map with the values `sourceVolume`, `containerPath` and (optional) `readOnly` .

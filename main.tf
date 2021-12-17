@@ -12,7 +12,8 @@ data "template_file" "container_definitions" {
     container_name           = var.name
     port_mappings            = var.port_mappings == "" ? format("[ { \"containerPort\": %s } ]", var.container_port) : var.port_mappings
     cpu                      = var.cpu
-    mem                      = var.memory
+    mem                      = var.memory    
+    stop_timeout             = var.stop_timeout
     command                  = length(var.command) > 0 ? jsonencode(var.command) : "null"
     container_env            = data.external.encode_env.result["env"]
     secrets                  = data.external.encode_secrets.result["secrets"]
