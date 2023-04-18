@@ -11,6 +11,12 @@ variable "cpu" {
   default     = "64"
 }
 
+variable "privileged" {
+  description = "Gives the container privileged access to the host"
+  type = bool
+  default = false
+}
+
 variable "memory" {
   description = "The memory limit for this container definition"
   default     = "256"

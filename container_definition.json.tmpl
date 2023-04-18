@@ -4,6 +4,7 @@
     "image": "${image}",
     "portMappings": ${port_mappings},
     "cpu": ${cpu},
+    "privileged": ${privileged},
     "memory": ${mem},
     ${stop_timeout == "none" ? "" : format("\"stopTimeout\": %s,", stop_timeout)}  
     "command": ${command},

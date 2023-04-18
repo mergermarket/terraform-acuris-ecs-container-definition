@@ -12,6 +12,7 @@ data "template_file" "container_definitions" {
     container_name           = var.name
     port_mappings            = var.port_mappings == "" ? format("[ { \"containerPort\": %s } ]", var.container_port) : var.port_mappings
     cpu                      = var.cpu
+    privileged               = var.privileged
     mem                      = var.memory    
     stop_timeout             = var.stop_timeout
     command                  = length(var.command) > 0 ? jsonencode(var.command) : "null"

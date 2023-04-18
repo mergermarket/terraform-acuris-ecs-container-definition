@@ -13,6 +13,7 @@ Input variables
  * `image` - (string) **REQUIRED** - The docker image in use
  * `container_port` - (string) OPTIONAL -App port to expose in the container. Default 8080.
  * `cpu`- (string) OPTIONAL -The CPU limit for this container definition
+ * `privileged`- (boolean) OPTIONAL - The container has privileged access to the hosts, default is false.
  * `memory`- (string) OPTIONAL - The memory limit for this container definition
  * `stop_timeout`- (number) OPTIONAL - Time duration (in seconds) to wait before the container is forcefully killed if it doesn't exit normally on its own.
  * `env`: (map) OPTIONAL - map with environment variables
