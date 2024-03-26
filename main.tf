@@ -23,6 +23,7 @@ data "template_file" "container_definitions" {
     mountpoint_sourceVolume  = lookup(var.mountpoint, "sourceVolume", "none")
     mountpoint_containerPath = lookup(var.mountpoint, "containerPath", "none")
     mountpoint_readOnly      = lookup(var.mountpoint, "readOnly", false)
+    extra_hosts              = jsonencode(var.extra_hosts)
   }
 }
 

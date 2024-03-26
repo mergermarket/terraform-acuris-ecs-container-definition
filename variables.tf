@@ -83,3 +83,8 @@ variable "stop_timeout" {
   default     = "none"
 }
 
+variable "extra_hosts" {
+  description = "values to add to /etc/hosts in the container"
+  type = map(string)
+  default = {}
+}
