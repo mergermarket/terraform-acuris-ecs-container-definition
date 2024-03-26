@@ -1,12 +1,10 @@
-import unittest
-import os
-import time
-import tempfile
-import shutil
 import json
-
+import os
+import shutil
+import tempfile
+import time
+import unittest
 from subprocess import check_call, check_output
-
 
 REGION = 'eu-west-1'
 
@@ -25,7 +23,7 @@ class TestContainerDefinition(unittest.TestCase):
     def tearDown(self):
         print('Tearing down')
         check_call(
-            ['terraform', 'destroy', '-force'] +
+            ['terraform', 'destroy', '-force', '-auto-approve'] +
             self.last_args + [self.module_path],
             cwd=self.workdir
         )
@@ -51,7 +49,7 @@ class TestContainerDefinition(unittest.TestCase):
         self.last_args = args
 
         check_call(
-            ['terraform', 'apply', '-no-color'] + args + [self.module_path],
+            ['terraform', 'apply', '-no-color', '-auto-approve'] + args + [self.module_path],
             cwd=self.workdir
         )
 
@@ -61,7 +59,7 @@ class TestContainerDefinition(unittest.TestCase):
         ).decode('utf8')
 
         print('output', output)
-        parsed_output = json.loads(output)["value"]
+        parsed_output = json.loads(output)
         parsed_definition = json.loads(parsed_output)
         return parsed_definition
 
@@ -73,10 +71,11 @@ class TestContainerDefinition(unittest.TestCase):
             'cpu': 1024,
             'memory': 1024,
             'container_port': 8001,
-            'nofile_soft_ulimit': 1000,
-            'labels': {}
+            'nofile_soft_ulimit': 1000
         }
-        varsmap = {}
+
+        varsmap = {'labels': {"label1": "value1"},
+            'extra_hosts': {"host1":"10.0.1.1"}}
 
         # when
         definition = self._apply_and_parse(variables, varsmap)
