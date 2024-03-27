@@ -17,4 +17,5 @@ docker run \
     py.test \
     --full-trace \
     --tb=long \
+    -vv \
     "$@"

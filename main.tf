@@ -2,6 +2,7 @@ locals {
   team      = lookup(var.labels, "team", "")
   env       = lookup(var.labels, "env", "")
   component = lookup(var.labels, "component", "")
+  extra_hosts = jsonencode(var.extra_hosts)
 }
 
 data "template_file" "container_definitions" {
@@ -23,7 +24,7 @@ data "template_file" "container_definitions" {
     mountpoint_sourceVolume  = lookup(var.mountpoint, "sourceVolume", "none")
     mountpoint_containerPath = lookup(var.mountpoint, "containerPath", "none")
     mountpoint_readOnly      = lookup(var.mountpoint, "readOnly", false)
-    extra_hosts              = jsonencode(var.extra_hosts)
+    extra_hosts              = local.extra_hosts == "[]" ? "null" : local.extra_hosts
   }
 }
 

@@ -85,6 +85,9 @@ variable "stop_timeout" {
 
 variable "extra_hosts" {
   description = "values to add to /etc/hosts in the container"
-  type = map(string)
-  default = {}
+  type = list(object({
+    hostname  = string
+    ipAddress = string
+  }))
+  default = []
 }

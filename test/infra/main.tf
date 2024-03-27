@@ -61,7 +61,7 @@ variable "cpu" { default = "64" }
 
 variable "command" { default = [] }
 
-variable "extra_hosts" { default = {}}
+variable "extra_hosts" { default = []}
   
 output "rendered" {
   value = "${module.tf_ecs_container_definition_test.rendered}"

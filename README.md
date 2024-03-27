@@ -19,13 +19,14 @@ Input variables
  * `env`: (map) OPTIONAL - map with environment variables
  * `metadata`: (map) OPTIONAL - Set of metadata for this container. It will be passed as environment variables (key uppercased) and labels.
  * `mountpoint`: (map) OPTIONAL - Configuration of one mountpoint for this volume. Map with the values `sourceVolume`, `containerPath` and (optional) `readOnly` .
+ * `extra_hosts`: list(object({name=string, ipAdress=string})) OPTIONAL - List of extra hosts to add to the container's /etc/hosts file.
 
 Usage
 -----
 
 ```hcl
 module "container_defintions" {
-  source = "github.com/mergermarket/tf_ecs_container_definitions"
+  source = "mergermarket/ecs-container-definition/acuris"
 
   name           = "some-app"
   image          = "repo/image"
@@ -48,6 +49,7 @@ module "container_defintions" {
     containerPath = '/mnt/data',
     readOnly      = true
   }
+  extraHosts = [{"hostname": "host1", "ipAddress": "10.0.0.1"}]
 }
 ```
 

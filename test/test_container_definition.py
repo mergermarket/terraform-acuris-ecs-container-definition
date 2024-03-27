@@ -75,7 +75,7 @@ class TestContainerDefinition(unittest.TestCase):
         }
 
         varsmap = {'labels': {"label1": "value1"},
-            'extra_hosts': {"host1":"10.0.1.1"}}
+            'extra_hosts': [{"host1":"10.0.1.1"}]}
 
         # when
         definition = self._apply_and_parse(variables, varsmap)
@@ -92,6 +92,7 @@ class TestContainerDefinition(unittest.TestCase):
             'hardLimit': 65535
         } in definition['ulimits']
         assert {'containerPort': 8001} in definition['portMappings']
+        assert {'extraHosts': [{'host1': '10.0.1.1' }]}
 
     def test_override_port_mappings(self):
         # Given
