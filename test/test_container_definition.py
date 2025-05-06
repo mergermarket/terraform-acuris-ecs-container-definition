@@ -92,7 +92,7 @@ class TestContainerDefinition(unittest.TestCase):
             'hardLimit': 65535
         } in definition['ulimits']
         assert {'containerPort': 8001} in definition['portMappings']
-        assert {'extraHosts': [{'host1': '10.0.1.1' }]}
+        assert {'extraHosts': [{'host1': '10.0.1.1'}]}
 
     def test_override_port_mappings(self):
         # Given

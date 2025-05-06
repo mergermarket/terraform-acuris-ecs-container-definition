@@ -2,30 +2,7 @@ locals {
   team      = lookup(var.labels, "team", "")
   env       = lookup(var.labels, "env", "")
   component = lookup(var.labels, "component", "")
-  extra_hosts = jsonencode(var.extra_hosts)
-}
-
-data "template_file" "container_definitions" {
-  template = file("${path.module}/container_definition.json.tmpl")
-
-  vars = {
-    image                    = var.image
-    container_name           = var.name
-    port_mappings            = var.port_mappings == "" ? format("[ { \"containerPort\": %s } ]", var.container_port) : var.port_mappings
-    cpu                      = var.cpu
-    privileged               = var.privileged
-    mem                      = var.memory    
-    stop_timeout             = var.stop_timeout
-    command                  = length(var.command) > 0 ? jsonencode(var.command) : "null"
-    container_env            = data.external.encode_env.result["env"]
-    secrets                  = data.external.encode_secrets.result["secrets"]
-    labels                   = jsonencode(var.labels)
-    nofile_soft_ulimit       = var.nofile_soft_ulimit
-    mountpoint_sourceVolume  = lookup(var.mountpoint, "sourceVolume", "none")
-    mountpoint_containerPath = lookup(var.mountpoint, "containerPath", "none")
-    mountpoint_readOnly      = lookup(var.mountpoint, "readOnly", false)
-    extra_hosts              = local.extra_hosts == "[]" ? "null" : local.extra_hosts
-  }
+  extra_hosts = var.extra_hosts
 }
 
 data "external" "encode_env" {

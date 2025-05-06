@@ -82,12 +82,8 @@ variable "stop_timeout" {
   description = "The duration is seconds to wait before the container is forcefully killed. Default 30s, max 120s."
   default     = "none"
 }
-
 variable "extra_hosts" {
   description = "values to add to /etc/hosts in the container"
-  type = list(object({
-    hostname  = string
-    ipAddress = string
-  }))
+  type = list(any)
   default = []
 }

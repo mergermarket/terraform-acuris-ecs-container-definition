@@ -64,5 +64,5 @@ variable "command" { default = [] }
 variable "extra_hosts" { default = []}
   
 output "rendered" {
-  value = "${module.tf_ecs_container_definition_test.rendered}"
+  value = module.tf_ecs_container_definition_test.rendered
 }
