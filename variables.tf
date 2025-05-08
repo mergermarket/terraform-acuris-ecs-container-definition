@@ -87,3 +87,18 @@ variable "extra_hosts" {
   type = list(any)
   default = []
 }
+
+variable "container_depends_on" {
+  description = "..."
+  type = list(object({
+    condition      = string
+    containerName  = string
+  }))
+  default = []
+}
+
+variable "container_links" {
+  description = "..."
+  type = list(string)
+  default = []
+}

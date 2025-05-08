@@ -18,6 +18,8 @@ output "rendered" {
       mountpoint_containerPath = lookup(var.mountpoint, "containerPath", "none")
       mountpoint_readOnly      = lookup(var.mountpoint, "readOnly", false)
       extra_hosts              = local.extra_hosts == [] ? "null" : jsonencode(local.extra_hosts)
+      depends_on               = local.container_depends_on == "[]" ? "null" : local.container_depends_on
+      links                    = local.container_links == "[]" ? "null" : local.container_links      
   })
 }
 
