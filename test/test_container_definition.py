@@ -32,6 +32,12 @@ class TestContainerDefinition(unittest.TestCase):
             shutil.rmtree(self.workdir)
 
     def _apply_and_parse(self, variables, varsmap={}):
+        return self._apply_and_parse_output('rendered', variables, varsmap)
+
+    def _apply_and_parse_definitions(self, variables, varsmap={}):
+        return self._apply_and_parse_output('rendered_definitions', variables, varsmap)
+
+    def _apply_and_parse_output(self, output_name, variables, varsmap):
         varsmap_file = os.path.join(self.workdir, 'varsmap.json')
         with open(varsmap_file, 'w') as f:
             f.write(json.dumps(varsmap))
@@ -54,7 +60,7 @@ class TestContainerDefinition(unittest.TestCase):
         )
 
         output = check_output(
-            ['terraform', 'output', '-json', 'rendered'],
+            ['terraform', 'output', '-json', output_name],
             cwd=self.workdir
         ).decode('utf8')
 
@@ -304,6 +310,72 @@ class TestContainerDefinition(unittest.TestCase):
         assert definition['cpu'] == 1024
         assert definition['memory'] == 1024
         assert definition['command'] is None
+
+    def test_rendered_definitions_with_cafagent_sidecar(self):
+        variables = {
+            'name': 'news-api',
+            'image': 'example/news-api:sha',
+            'cpu': 128,
+            'memory': 1028,
+            'container_port': 3000
+        }
+        varsmap = {
+            'enable_cafagent_sidecar': True,
+            'cafagent_image': 'example/caf-agent:sha',
+            'cafagent_cpu': 128,
+            'cafagent_memory': 128,
+            'cafagent_environment': {
+                'LOG_LEVEL': 'info',
+                'INDEX_NAME': 'news-api'
+            },
+            'app_firelens_log_options': {
+                'Name': 'opensearch',
+                'Host': 'logs.example.internal',
+                'Port': '443',
+                'TLS': 'On'
+            },
+            'cafagent_log_configuration': {
+                'logDriver': 'awslogs',
+                'options': {
+                    'awslogs-group': '/ecs/news-api',
+                    'awslogs-region': 'eu-west-1',
+                    'awslogs-stream-prefix': 'caf-agent-ecs'
+                }
+            }
+        }
+
+        definitions = self._apply_and_parse_definitions(variables, varsmap)
+
+        assert len(definitions) == 2
+
+        app = definitions[0]
+        sidecar = definitions[1]
+
+        assert app['name'] == 'news-api'
+        assert app['image'] == 'example/news-api:sha'
+        assert app['logConfiguration'] == {
+            'logDriver': 'awsfirelens',
+            'options': varsmap['app_firelens_log_options']
+        }
+
+        assert sidecar['name'] == 'caf-agent-sidecar'
+        assert sidecar['image'] == 'example/caf-agent:sha'
+        assert sidecar['essential'] is True
+        assert sidecar['cpu'] == 128
+        assert sidecar['memory'] == 128
+        assert {
+            'name': 'LOG_LEVEL',
+            'value': 'info'
+        } in sidecar['environment']
+        assert sidecar['logConfiguration'] == varsmap['cafagent_log_configuration']
+        assert sidecar['firelensConfiguration'] == {
+            'type': 'fluentbit',
+            'options': {
+                'config-file-type': 'file',
+                'config-file-value': '/fluent-bit/etc/custom-caf-agent.conf',
+                'enable-ecs-log-metadata': 'true'
+            }
+        }
 
 
 class TestEncodeSecrets(unittest.TestCase):

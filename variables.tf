@@ -102,3 +102,83 @@ variable "container_links" {
   type = list(string)
   default = []
 }
+
+variable "enable_cafagent_sidecar" {
+  description = "Include a FireLens CAF agent sidecar and route application stdout and stderr through it."
+  type        = bool
+  default     = false
+}
+
+variable "cafagent_image" {
+  description = "CAF agent Fluent Bit image. Required when enable_cafagent_sidecar is true."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = !var.enable_cafagent_sidecar || try(trimspace(var.cafagent_image) != "", false)
+    error_message = "cafagent_image must be set when enable_cafagent_sidecar is true."
+  }
+}
+
+variable "cafagent_cpu" {
+  description = "CPU units reserved for the CAF agent sidecar."
+  type        = number
+  default     = 128
+}
+
+variable "cafagent_memory" {
+  description = "Memory in MiB reserved for the CAF agent sidecar."
+  type        = number
+  default     = 128
+}
+
+variable "cafagent_environment" {
+  description = "Environment variables for the CAF agent sidecar."
+  type        = map(string)
+  default     = {}
+}
+
+variable "cafagent_secrets" {
+  description = "ECS Secrets Manager secret definitions for the CAF agent sidecar."
+  type = list(object({
+    name      = string
+    valueFrom = string
+  }))
+  default = []
+}
+
+variable "cafagent_mount_points" {
+  description = "Mount points for the CAF agent sidecar."
+  type        = list(any)
+  default     = []
+}
+
+variable "app_firelens_log_options" {
+  description = "FireLens output options used by the application container when the sidecar is enabled."
+  type        = map(string)
+  default     = {}
+}
+
+variable "cafagent_log_configuration" {
+  description = "ECS log configuration for the CAF agent sidecar. Required when the sidecar is enabled."
+  type = object({
+    logDriver = string
+    options   = map(string)
+  })
+  default = null
+
+  validation {
+    condition     = !var.enable_cafagent_sidecar || var.cafagent_log_configuration != null
+    error_message = "cafagent_log_configuration must be set when enable_cafagent_sidecar is true."
+  }
+}
+
+variable "firelens_configuration_options" {
+  description = "FireLens Fluent Bit configuration options for the CAF agent sidecar."
+  type        = map(string)
+  default = {
+    "config-file-type"        = "file"
+    "config-file-value"       = "/fluent-bit/etc/custom-caf-agent.conf"
+    "enable-ecs-log-metadata" = "true"
+  }
+}

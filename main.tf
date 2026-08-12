@@ -16,6 +16,15 @@ data "external" "encode_env" {
   }
 }
 
+data "external" "encode_cafagent_env" {
+  program = ["python", "${path.module}/encode_env.py"]
+
+  query = {
+    env      = jsonencode(var.cafagent_environment)
+    metadata = jsonencode({})
+  }
+}
+
 data "external" "encode_secrets" {
   program = ["python", "${path.module}/encode_secrets.py"]
 
