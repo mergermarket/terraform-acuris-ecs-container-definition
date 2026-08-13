@@ -13,8 +13,8 @@ variable "cpu" {
 
 variable "privileged" {
   description = "Gives the container privileged access to the host"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "memory" {
@@ -84,23 +84,23 @@ variable "stop_timeout" {
 }
 variable "extra_hosts" {
   description = "values to add to /etc/hosts in the container"
-  type = list(any)
-  default = []
+  type        = list(any)
+  default     = []
 }
 
 variable "container_depends_on" {
   description = "..."
   type = list(object({
-    condition      = string
-    containerName  = string
+    condition     = string
+    containerName = string
   }))
   default = []
 }
 
 variable "container_links" {
   description = "..."
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "enable_cafagent_sidecar" {

@@ -16,16 +16,25 @@ class TestContainerDefinition(unittest.TestCase):
     def setUp(self):
         self.workdir = tempfile.mkdtemp()
         self.module_path = f'{os.getcwd()}/test/infra'
+        self.state_file = os.path.join(self.workdir, 'terraform.tfstate')
+        self.terraform_env = {
+            **os.environ,
+            'TF_DATA_DIR': os.path.join(self.workdir, '.terraform')
+        }
 
-        check_call(['terraform', 'init', self.module_path], cwd=self.workdir)
-        check_call(['terraform', 'get', self.module_path], cwd=self.workdir)
+        check_call(
+            ['terraform', f'-chdir={self.module_path}', 'init'],
+            cwd=self.workdir,
+            env=self.terraform_env
+        )
 
     def tearDown(self):
         print('Tearing down')
         check_call(
-            ['terraform', 'destroy', '-force', '-auto-approve'] +
-            self.last_args + [self.module_path],
-            cwd=self.workdir
+            ['terraform', f'-chdir={self.module_path}', 'destroy', '-auto-approve', f'-state={self.state_file}'] +
+            self.last_args,
+            cwd=self.workdir,
+            env=self.terraform_env
         )
 
         if os.path.isdir(self.workdir):
@@ -55,13 +64,15 @@ class TestContainerDefinition(unittest.TestCase):
         self.last_args = args
 
         check_call(
-            ['terraform', 'apply', '-no-color', '-auto-approve'] + args + [self.module_path],
-            cwd=self.workdir
+            ['terraform', f'-chdir={self.module_path}', 'apply', '-no-color', '-auto-approve', f'-state={self.state_file}'] + args,
+            cwd=self.workdir,
+            env=self.terraform_env
         )
 
         output = check_output(
-            ['terraform', 'output', '-json', output_name],
-            cwd=self.workdir
+            ['terraform', f'-chdir={self.module_path}', 'output', '-state', self.state_file, '-json', output_name],
+            cwd=self.workdir,
+            env=self.terraform_env
         ).decode('utf8')
 
         print('output', output)

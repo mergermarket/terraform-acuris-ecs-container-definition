@@ -7,7 +7,7 @@ output "rendered" {
       port_mappings            = var.port_mappings == "" ? format("[ { \"containerPort\": %s } ]", var.container_port) : var.port_mappings
       cpu                      = var.cpu
       privileged               = var.privileged
-      mem                      = var.memory    
+      mem                      = var.memory
       stop_timeout             = var.stop_timeout
       command                  = length(var.command) > 0 ? jsonencode(var.command) : "null"
       container_env            = data.external.encode_env.result["env"]
@@ -19,7 +19,7 @@ output "rendered" {
       mountpoint_readOnly      = lookup(var.mountpoint, "readOnly", false)
       extra_hosts              = local.extra_hosts == [] ? "null" : jsonencode(local.extra_hosts)
       depends_on               = local.container_depends_on == "[]" ? "null" : local.container_depends_on
-      links                    = local.container_links == "[]" ? "null" : local.container_links      
+      links                    = local.container_links == "[]" ? "null" : local.container_links
   })
 }
 

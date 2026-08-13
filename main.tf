@@ -1,10 +1,10 @@
 locals {
-  team      = lookup(var.labels, "team", "")
-  env       = lookup(var.labels, "env", "")
-  component = lookup(var.labels, "component", "")
-  extra_hosts = var.extra_hosts
-  container_depends_on  = jsonencode(var.container_depends_on)
-  container_links  = jsonencode(var.container_links)
+  team                 = lookup(var.labels, "team", "")
+  env                  = lookup(var.labels, "env", "")
+  component            = lookup(var.labels, "component", "")
+  extra_hosts          = var.extra_hosts
+  container_depends_on = jsonencode(var.container_depends_on)
+  container_links      = jsonencode(var.container_links)
 }
 
 data "external" "encode_env" {
