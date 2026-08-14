@@ -1,0 +1,58 @@
+[
+  {
+    "name": "${container_name}",
+    "essential": true,
+    "image": "${image}",
+    "portMappings": ${port_mappings},
+    "cpu": ${cpu},
+    "privileged": ${privileged},
+    "memory": ${mem},
+    ${stop_timeout == "none" ? "" : format("\"stopTimeout\": %s,", stop_timeout)}
+    "command": ${command},
+    "environment": ${container_env},
+    "secrets": ${secrets},
+    "dockerLabels": ${labels},
+    "mountPoints": [
+      ${mountpoint_sourceVolume == "none" ? "" :
+        format(
+          "{ \"sourceVolume\": \"%s\", \"containerPath\": \"%s\", \"readOnly\": %s }",
+          mountpoint_sourceVolume,
+          mountpoint_containerPath,
+          mountpoint_readOnly
+        )
+      }
+    ],
+    "ulimits": [
+      {
+        "name": "nofile",
+        "softLimit": ${nofile_soft_ulimit},
+        "hardLimit": 65535
+      }
+    ],
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
+    "extraHosts": ${extra_hosts},
+    "dependsOn": ${depends_on},
+    "links": ${links}%{ if enable_cafagent_sidecar },
+    "logConfiguration": {
+      "logDriver": "awsfirelens",
+      "options": ${app_firelens_log_options}
+    }%{ endif }
+  }%{ if enable_cafagent_sidecar },
+  {
+    "name": "caf-agent-sidecar",
+    "essential": true,
+    "image": "${cafagent_image}",
+    "cpu": ${cafagent_cpu},
+    "memory": ${cafagent_memory},
+    "environment": ${cafagent_environment},
+    "secrets": ${cafagent_secrets},
+    "mountPoints": ${cafagent_mount_points},
+    "logConfiguration": ${cafagent_log_configuration},
+    "firelensConfiguration": {
+      "type": "fluentbit",
+      "options": ${firelens_configuration_options}
+    }
+  }%{ endif }
+]

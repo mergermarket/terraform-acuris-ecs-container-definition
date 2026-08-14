@@ -1,10 +1,10 @@
 locals {
-  team      = lookup(var.labels, "team", "")
-  env       = lookup(var.labels, "env", "")
-  component = lookup(var.labels, "component", "")
-  extra_hosts = var.extra_hosts
-  container_depends_on  = jsonencode(var.container_depends_on)
-  container_links  = jsonencode(var.container_links)
+  team                 = lookup(var.labels, "team", "")
+  env                  = lookup(var.labels, "env", "")
+  component            = lookup(var.labels, "component", "")
+  extra_hosts          = var.extra_hosts
+  container_depends_on = jsonencode(var.container_depends_on)
+  container_links      = jsonencode(var.container_links)
 }
 
 data "external" "encode_env" {
@@ -13,6 +13,15 @@ data "external" "encode_env" {
   query = {
     env      = jsonencode(var.container_env)
     metadata = jsonencode(var.metadata)
+  }
+}
+
+data "external" "encode_cafagent_env" {
+  program = ["python", "${path.module}/encode_env.py"]
+
+  query = {
+    env      = jsonencode(var.cafagent_environment)
+    metadata = jsonencode({})
   }
 }
 
