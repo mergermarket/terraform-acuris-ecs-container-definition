@@ -102,3 +102,15 @@ variable "container_links" {
   type = list(string)
   default = []
 }
+
+variable "health_check" {
+  description = "Health check attributes for the container (empty command list will disable health checks, the default)"
+  type = object({ command: list(string), interval: number, timeout: number, retries: number, startPeriod: number })
+  default = {
+    command = []
+    interval = 30
+    timeout = 5
+    retries = 3
+    startPeriod = 0
+  }
+}

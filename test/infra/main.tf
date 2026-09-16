@@ -29,6 +29,7 @@ module "tf_ecs_container_definition_test" {
   application_secrets = var.application_secrets
   platform_secrets    = var.platform_secrets
   extra_hosts         = var.extra_hosts
+  health_check        = var.health_check
 }
 
 variable "name" {}
@@ -62,7 +63,18 @@ variable "cpu" { default = "64" }
 variable "command" { default = [] }
 
 variable "extra_hosts" { default = []}
-  
+
+variable "health_check" {
+  type = object({ command: list(string), interval: number, timeout: number, retries: number, startPeriod: number })
+  default = {
+    command = []
+    interval = 30
+    timeout = 5
+    retries = 3
+    startPeriod = 0
+  }
+}
+
 output "rendered" {
   value = module.tf_ecs_container_definition_test.rendered
 }

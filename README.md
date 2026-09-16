@@ -20,6 +20,7 @@ Input variables
  * `metadata`: (map) OPTIONAL - Set of metadata for this container. It will be passed as environment variables (key uppercased) and labels.
  * `mountpoint`: (map) OPTIONAL - Configuration of one mountpoint for this volume. Map with the values `sourceVolume`, `containerPath` and (optional) `readOnly` .
  * `extra_hosts`: list(object({name=string, ipAdress=string})) OPTIONAL - List of extra hosts to add to the container's /etc/hosts file.
+ * `health_check`: `object({ command: list(string), interval: number, timeout: number, retries: number, startPeriod: number })` OPTIONAL - Health check attributes for the container
 
 Usage
 -----
